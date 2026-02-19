@@ -1,11 +1,10 @@
 import { useState } from "react";
-import dummyData from "../data/dummyArticle";
 import Filters from "../components/Filters";
 import ArticleList from "../components/ArticleList";
 import Pagination from "../components/Pagination";
+import { Link } from "react-router-dom";
 
-function Home() {
-  const [articles] = useState(dummyData);
+function Home({ articles }) {
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState("");
   const [sort, setSort] = useState("latest");

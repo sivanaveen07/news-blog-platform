@@ -13,7 +13,11 @@ function Navbar({ isLoggedIn, setIsLoggedIn }) {
       ) : (
         <>
           <Link to="/dashboard" style={{ marginRight: "15px" }}>Dashboard</Link>
-          <button onClick={() => setIsLoggedIn(false)}>Logout</button>
+          <Link to="/create" style={{ marginRight: "15px" }}>Create Article</Link>
+          <button onClick={() => {
+            localStorage.removeItem('isLoggedIn');
+            setIsLoggedIn(false);// Update the state in App component to reflect logout
+          }}>Logout</button>
         </>
       )}
     </nav>
