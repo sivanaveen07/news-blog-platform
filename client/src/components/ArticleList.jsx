@@ -3,8 +3,8 @@ function ArticleList({ articles }) {
   return (
     <ul>
       {articles.map((article) => (
-        <li key={article.id}>
-            <Link to={`/article/${article.id}`}>
+        <li key={article._id}>
+            <Link to={`/article/${article._id}`}>
           {article.title} </Link>
           {"-"} 
           {article.category}

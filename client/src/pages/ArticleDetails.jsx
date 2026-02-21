@@ -1,39 +1,51 @@
 import { useParams } from "react-router-dom";
-import { useEffect,useRef } from "react";
-function ArticleDetails({articles,likeArticle,viewArticle}){
-    const id = useParams().id;
-    const article = articles.find(
-        (item) => item.id === Number(id)
-    );
-    const hasViewed = useRef(false);
-    useEffect(()=>{
-        if(id && !hasViewed.current){
-            viewArticle(Number(id));
-            hasViewed.current = true;
-        }},[id]);
-    if(!article){
-        return <h1>Article not found</h1>
-    } 
+import { useEffect, useState } from "react";
 
-    return(
-        <div>
-            <h1>{article.title}</h1>
-            <p><strong>Likes:</strong> {article.likes}</p>
-            <button onClick={() => likeArticle(article.id)}>
-            👍 Like
-            </button>
-            <p><strong>Category:</strong>{article.category}</p>
-            <p><strong>Likes:</strong>{article.likes}</p>
-            <p><strong>Views:</strong>{article.views}</p>
-            <p><strong>Created At:</strong>{article.createdAt}</p>
+function ArticleDetails() {
+  const { id } = useParams();
 
-            <h2>Tags</h2>
-            <ul>
-                {article.tags.map((tag,index)=>(
-                    <li key={index}>{tag}</li>
-                ))}
-            </ul>
-        </div>
-    )
+  const [article, setArticle] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchArticle = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+
+        const response = await fetch(
+          `http://localhost:5000/api/articles/${id}`
+        );
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch article");
+        }
+
+        const data = await response.json();
+        setArticle(data);
+      } catch (err) {
+        console.error("Error fetching article:", err);
+        setError("Something went wrong");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchArticle();
+  }, [id]);
+
+  if (loading) return <div>Loading article...</div>;
+  if (error) return <div>{error}</div>;
+  if (!article) return <div>No article found</div>;
+
+  return (
+    <div>
+      <h2>{article.title}</h2>
+      <p><strong>Category:</strong> {article.category}</p>
+      <p>{article.content}</p>
+    </div>
+  );
 }
+
 export default ArticleDetails;

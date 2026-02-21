@@ -1,54 +1,54 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Filters from "../components/Filters";
 import ArticleList from "../components/ArticleList";
 import Pagination from "../components/Pagination";
-import { Link } from "react-router-dom";
 
-function Home({ articles }) {
+function Home() {
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState("");
   const [sort, setSort] = useState("latest");
   const [currentPage, setCurrentPage] = useState(1);
+  const [articles, setArticles] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [totalPages, setTotalPages] = useState(1);
 
-  const articlesPerPage = 2;
+  useEffect(() => {
+    const fetchArticles = async () => {
+      try {
+        setLoading(true);
+        setError(null);
 
-  const handleSearchChange = (e) => {
-    setSearch(e.target.value);
-    setCurrentPage(1);
-  };
+        const response = await fetch(
+          `http://localhost:5000/api/articles?page=${currentPage}&limit=10&search=${search}&sort=${sort}&category=${category}`
+        );
 
-  const handleCategoryChange = (e) => {
-    setCategory(e.target.value);
-    setCurrentPage(1);
-  };
+        if (!response.ok) {
+          throw new Error("Failed to fetch articles");
+        }
 
-  const handleSortChange = (e) => {
-    setSort(e.target.value);
-    setCurrentPage(1);
-  };
+        const data = await response.json();
 
-  const filteredArticles = articles
-    .filter((article) =>
-      article.title.toLowerCase().includes(search.trim().toLowerCase()) ||
-      article.category.toLowerCase().includes(search.trim().toLowerCase()) ||
-      article.tags.some((tag) =>
-        tag.toLowerCase().includes(search.trim().toLowerCase())
-      )
-    )
-    .filter((article) => (category ? article.category === category : true));
+        setArticles(data.articles);
+        setTotalPages(data.totalPages);
+      } catch (error) {
+        console.error("Error fetching articles:", error);
+        setError("Failed to fetch articles. Please try again later.");
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  const sortedArticles = [...filteredArticles].sort((a, b) => {
-    if (sort === "popular") {
-      const scoreA = a.likes + a.views;
-      const scoreB = b.likes + b.views;
-      return scoreB - scoreA;
-    }
-    return new Date(b.createdAt) - new Date(a.createdAt);
-  });
+    fetchArticles();
+  }, [currentPage, search, sort, category]);
 
-  const indexOfLast = currentPage * articlesPerPage;
-  const indexOfFirst = indexOfLast - articlesPerPage;
-  const currentArticles = sortedArticles.slice(indexOfFirst, indexOfLast);
+  if (loading) {
+    return <div>Loading articles...</div>;
+  }
+
+  if (error) {
+    return <div className="error">{error}</div>;
+  }
 
   return (
     <div>
@@ -58,18 +58,26 @@ function Home({ articles }) {
         search={search}
         category={category}
         sort={sort}
-        handleSearchChange={handleSearchChange}
-        handleCategoryChange={handleCategoryChange}
-        handleSortChange={handleSortChange}
+        handleSearchChange={(e) => {
+          setSearch(e.target.value);
+          setCurrentPage(1);
+        }}
+        handleCategoryChange={(e) => {
+          setCategory(e.target.value);
+          setCurrentPage(1);
+        }}
+        handleSortChange={(e) => {
+          setSort(e.target.value);
+          setCurrentPage(1);
+        }}
       />
 
-      <ArticleList articles={currentArticles} />
+      <ArticleList articles={articles} />
 
       <Pagination
         currentPage={currentPage}
         setCurrentPage={setCurrentPage}
-        totalArticles={sortedArticles.length}
-        articlesPerPage={articlesPerPage}
+        totalPages={totalPages}
       />
     </div>
   );

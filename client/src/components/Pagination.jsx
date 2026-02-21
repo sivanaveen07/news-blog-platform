@@ -1,7 +1,6 @@
-function Pagination({ currentPage, setCurrentPage, totalArticles, articlesPerPage }) {
+function Pagination({ currentPage, setCurrentPage, totalPages, }) {
 
-  const indexOfLast = currentPage * articlesPerPage;
-
+  
   return (
     <div>
       <button
@@ -13,7 +12,7 @@ function Pagination({ currentPage, setCurrentPage, totalArticles, articlesPerPag
 
       <button
         onClick={() => setCurrentPage(prev => prev + 1)}
-        disabled={indexOfLast >= totalArticles}
+        disabled={currentPage === totalPages}
       >
         Next
       </button>
