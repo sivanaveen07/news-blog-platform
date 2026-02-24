@@ -1,0 +1,22 @@
+.search-bar-modern .input-group {
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--color-border);
+}
+
+.search-input-modern {
+  border: none;
+  padding: 0.75rem 1.25rem;
+  font-size: 1rem;
+}
+
+.search-input-modern:focus {
+  box-shadow: none;
+  border-color: transparent;
+}
+
+.search-bar-modern .search-btn {
+  padding: 0.75rem 1.5rem;
+  border-radius: 0;
+}

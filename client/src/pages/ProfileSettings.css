@@ -1,0 +1,30 @@
+.profile-settings-page .page-title {
+  font-family: var(--font-display);
+  font-size: 1.75rem;
+  font-weight: 700;
+}
+
+.settings-card .card-header {
+  background: var(--color-bg);
+  border-bottom: 1px solid var(--color-border-light);
+  padding: 1rem 1.25rem;
+}
+
+.settings-card .card-header h5 {
+  font-family: var(--font-display);
+  font-weight: 600;
+}
+
+.profile-avatar-large {
+  width: 80px;
+  height: 80px;
+  margin: 0 auto;
+  background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  font-weight: 700;
+}
